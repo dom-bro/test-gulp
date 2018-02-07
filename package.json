@@ -1,0 +1,17 @@
+{
+  "name": "test-gulp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "gulp watch:less"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-debug": "^3.2.0",
+    "gulp-less": "^3.3.2"
+  }
+}
