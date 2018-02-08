@@ -4,14 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch": "gulp watch:less"
+    "watch": "gulp watch:less",
+    "build": "gulp build:less"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "colors": "^1.1.2",
     "gulp": "^4.0.0",
     "gulp-debug": "^3.2.0",
-    "gulp-less": "^3.3.2"
+    "gulp-less": "^3.3.2",
+    "lodash": "^4.17.5"
   }
 }
