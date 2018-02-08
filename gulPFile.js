@@ -1,13 +1,16 @@
 const gulp = require('gulp')
+const less = require('gulp-less')
 const genTask = require('./build/gen_task')
 
-const less = genTask({
+const Less = genTask({
   src: 'src/**/*.less',
-  dest: 'dom-bro/dist',
+  dest: 'dist',
   taskName: 'build:less',
-  build: [],
+  plugins: [
+    less(),
+  ],
 })
 
-gulp.task('build:less', done => less.task(done, true))
+gulp.task('build:less', Less.task)
 
-gulp.task('watch:less', less.watch)
+gulp.task('watch:less', Less.watch)
