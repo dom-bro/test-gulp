@@ -12,21 +12,24 @@ module.exports = config => {
   let hot = true
   let changes = []
 
+  if(config.plugins && typeof config.plugins !== 'function') throw new TypeError('[Gen Task]：plugins 选项必须是 Function 类型！')
+
   /**
    * @private
    * @param {Function} done
    */
-  function task (done) {
+  const build = done => {
     const isHot = hot && changes.length
+    
     logic(gulp.src(isHot ? changes : config.src))
       .pipe(debug({
         title: `${isHot ? 'Hot' : 'Full'} Build: `.yellow,
         showFiles: isHot,
       }))
-      .pipe(config.plugins)
+      .pipe(config.plugins && config.plugins())
       .pipe(gulp.dest(config.dest))
       .onFinish(() => {
-        console.log('Build Done!'.rainbow)
+        console.log('============== Build Done =============='.rainbow)
         done()
       })
 
@@ -34,33 +37,32 @@ module.exports = config => {
     hot = true
     changes = []
   }
-  task.displayName = config.taskName
+  build.displayName = 'build:' + config.taskName
 
-  const build = gulp.series(task)
-  const debouncedBuild = _.debounce(build, 100)
+  const buildTask = gulp.series(build)
+  const debouncedBuild = _.debounce(buildTask, 100)
 
   // 1s 之内无文件保存动作做一次编译
-  function watch (done) {
-    build(done)
-    build(done)
+  function watch () {
+    buildTask()
     // 如果同时保存的多个文件中存在模块文件（即 _ 开头的文件）就执行全编译，否则热编译
-    // gulp.watch(config.src)
-    //   .on('all', (e, p) => {
-    //     if (hot) {
-    //       // 收集变更
-    //       if (/^_/.test(path.basename(p, path.extname(p)))) {
-    //         hot = false
-    //       } else {
-    //         changes.push(p)
-    //       }
-    //     }
-    //     debouncedBuild()
-    //   })
+    gulp.watch(config.src)
+      .on('all', (e, p) => {
+        if (hot) {
+          // 收集变更
+          if (/^_/.test(path.basename(p, path.extname(p)))) {
+            hot = false
+          } else {
+            changes.push(p)
+          }
+        }
+        debouncedBuild()
+      })
   }
 
   return {
-    task,
+    name: config.taskName,
+    build,
     watch,
   }
 }
-

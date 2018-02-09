@@ -3,11 +3,10 @@
  * 该插件是为了满足如下需求：
  *     - 传入一个 Array，依次 pipe 数组里的每个 Stream；
  *     - 传入一个 Function，在里面执行业务逻辑，最后 pipe 函数 return 出来的 Stream 或 Stream 数组；
- *
- * 注意：
- *     - 串联 pipe 完之后调用 end 来取到 node 的 Stream，这对某些插件（比如 gulp 需要 return）极为重要；
  */
 const Stream = require('stream')
+
+module.exports = stream => new NodeStream(stream)
 
 class NodeStream {
   /**
@@ -19,43 +18,33 @@ class NodeStream {
     self.stream = stream
   }
   /**
-   * @param {Stream} destination
-   */
-  streamPipe(destination) {
-    const self = this
-
-    if (destination instanceof Stream) {
-      self.stream = self.stream.pipe(destination)
-    } else {
-      throw new Error(`[Logic Pipe]：pipe 方法的输入类型是 ${destination.constructor.name}，而不是所期望的 Stream！`)
-    }
-  }
-
-  /**
-   * @param {Stream|Array|Function} processor 如果传入 Function，那么这个 Function 的返回值期望是 {Stream|Array}
+   * @param {Stream | Array | Function} processor 由于 stream.Writable 在 stream.end() 之后再调用 stream.write() 将会导致错误，因此请确保每次执行 pipe 时传入它的实参都是一个全新的可用的 Stream 实例，这种情况下 Function 就会很有用。
    * @returns {NodeStream}
    */
   pipe(processor) {
     const self = this
 
     if (processor) {
-      switch (Object.prototype.toString.call(processor)) {
-        case '[object Array]':
-          processor.forEach(p => self.streamPipe(p))
-          break
-        case '[object Function]':
-          self.pipe(processor.call(self))
-          break
-        default:
-          self.streamPipe(processor)
-          break
-      }
+      const type = Object.prototype.toString.call(processor)
+
+      if (processor instanceof Stream) self.stream = self.stream.pipe(processor)
+      else if (type === '[object Array]') processor.forEach(p => self.stream = self.stream.pipe(p))
+      else if (type === '[object Function]') self.pipe(processor.call(self))
+      else throw new TypeError('[Logic Pipe]：pipe 方法的实参类型必须是 {Stream | Array | Function}')
+      
     }
     return self
   }
+  /**
+   * @returns {Stream} 返回传入的原始 stream
+   */
   raw() {
     return this.stream
   }
+
+  /**
+   * @param {Function} cb 流写入关闭后执行回调
+   */
   onFinish(cb) {
     const self = this
 
@@ -64,4 +53,3 @@ class NodeStream {
     })
   }
 }
-module.exports = stream => new NodeStream(stream)
