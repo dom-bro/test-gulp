@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .left{
+            background: red;
+            color: #fff;
+        }
+        .right{
+            background: blue;
+            color: #fff;
+        }
+
+        .left{
+
+        }
+        .right{
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="parent">
+    <div class="left">left</div>
+    <div class="right">
+        <div>> 192.168.100.12 -- LANG=en_US.UTF-8 /etc/nginx/scripts/frontend-ctl s17-status commons 2>&1</div>
+        >> commons:
+        r7065 | (no author) | 2018-02-10 09:21:58 +0800 (Sat, 10 Feb 2018) | 1 line  BUILD_STAGE:test BUILD_ID:20180210-092038-8cbe135-master
+        <h1>r7064 | (no author) | 2018-02-10 09:06:45 +0800 (Sat, 10 Feb 2018) | 1 line  BUILD_STAGE:test BUILD_ID:20180210-090518-eb72108-master
+            r7063 | (no author) | 2018-02-09 21:41:50 +0800 (Fri, 09 Feb 2018) | 1 line  BUILD_STAGE:test BUILD_ID:20180209-214019-2b686c0-master</h1>
+
+
+        NodeApp
+        >> 192.168.100.92 -- /usr/bin/svn log -l 1 /data/nodeapp/frontend 2>&1 ; pm2 status --no-color
+        ------------------------------------------------------------------------
+        r7068 | (no author) | 2018-02-11 15:29:16 +0800 (Sun, 11 Feb 2018) | 1 line
+
+        BUILD_STAGE:test BUILD_ID:20180211-152854-2fd1120-master
+        ------------------------------------------------------------------------
+        ┌──────────┬────┬─────────┬──────┬────────┬─────────┬────────┬─────┬───────────┬──────────┐
+        │ App name │ id │ mode    │ pid  │ status │ restart │ uptime │ cpu │ mem       │ watching │
+        ├──────────┼────┼─────────┼──────┼────────┼─────────┼────────┼─────┼───────────┼──────────┤
+        │ app      │ 0  │ cluster │ 3546 │ online │ 104     │ 5s     │ 0%  │ 67.6 MB   │ disabled │
+        │ app      │ 1  │ cluster │ 3551 │ online │ 104     │ 5s     │ 0%  │ 81.1 MB   │ disabled │
+        └──────────┴────┴─────────┴──────┴────────┴─────────┴────────┴─────┴───────────┴──────────┘
+        Use `pm2 show` to get more details about an app</div>
+</div>
+</body>
+</html>
